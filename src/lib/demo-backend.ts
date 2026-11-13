@@ -3,7 +3,20 @@
 import type { AxiosAdapter, InternalAxiosRequestConfig } from "axios";
 import { dummyProperties, dummyRoommates, dummyCoupons, dummyAdvertisements, dummyStaff } from "./data";
 
-export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE !== "false";
+function resolveDemoMode(): boolean {
+  if (import.meta.env.VITE_DEMO_MODE === "true") return true;
+  if (typeof window === "undefined") return false;
+  try {
+    const q = new URLSearchParams(window.location.search).get("demo");
+    if (q === "1") localStorage.setItem("setmystay_demo", "1");
+    if (q === "0") localStorage.removeItem("setmystay_demo");
+    return localStorage.getItem("setmystay_demo") === "1";
+  } catch {
+    return false;
+  }
+}
+// Off by default: real server. Enable with VITE_DEMO_MODE=true or ?demo=1 (?demo=0 disables).
+export const DEMO_MODE = resolveDemoMode();
 
 const HOME_IMG = [
   "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80",
