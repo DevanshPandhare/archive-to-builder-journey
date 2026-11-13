@@ -51,6 +51,7 @@ import { format, startOfWeek, addDays, getWeek, formatDistanceToNow, differenceI
 import { cn } from '@/lib/utils';
 import { getFromLocalStorage, saveToLocalStorage } from '@/lib/storage';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { ThemeCustomizer } from '@/components/admin/theme-customizer';
 
 // Default credentials for the very first run
 const DEFAULT_ADMIN_PASSWORD = 'Bluechip@123';
@@ -1295,6 +1296,7 @@ function AdminDashboard() {
                         <TabsTrigger value="staff">Staff</TabsTrigger>
                         {/* 👇 New Purchases Tab 👇 */}
                         <TabsTrigger value="purchases">Purchases</TabsTrigger>
+                        <TabsTrigger value="appearance">Appearance</TabsTrigger>
                     </TabsList>
                 </div>
                 
@@ -1676,6 +1678,10 @@ function AdminDashboard() {
                             </div>
                         </CardContent>
                     </Card>
+                </TabsContent>
+
+                <TabsContent value="appearance">
+                    <ThemeCustomizer />
                 </TabsContent>
 
                 {/* 👇 NEW PURCHASES TAB CONTENT 👇 */}

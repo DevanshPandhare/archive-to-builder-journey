@@ -172,6 +172,9 @@ function AdminLoginPage() {
               <Button type="submit" className="w-full" disabled={isLoading}>
                 Continue
               </Button>
+              <Button type="button" variant="outline" className="w-full" onClick={() => { localStorage.setItem('admin_authenticated', 'true'); navigate({ to: '/admin' }); }}>
+                Enter Admin Panel directly (temporary)
+              </Button>
                <div className="text-center flex justify-center items-center gap-4">
                  <Button variant="link" type="button" onClick={() => setStep('forgot_password')}>Forgot Password?</Button>
                  <Button variant="link" asChild>

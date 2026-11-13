@@ -10,6 +10,7 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { syncSiteTheme } from "@/lib/site-theme";
 
 import { SmoothScroll } from "@/components/smooth-scroll";
 import appCss from "../styles.css?url";
@@ -127,6 +128,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useLocation({ select: (l) => l.pathname });
+  useEffect(() => { syncSiteTheme(); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
