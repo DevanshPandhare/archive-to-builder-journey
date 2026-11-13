@@ -152,7 +152,7 @@ function Home() {
           
           if (activeAd && !adShownInSession) {
               setAdToShow(activeAd);
-              setIsAdModalOpen(true);
+              setTimeout(() => setIsAdModalOpen(true), 6000);
               sessionStorage.setItem('setmystay_ad_shown', 'true');
           }
 

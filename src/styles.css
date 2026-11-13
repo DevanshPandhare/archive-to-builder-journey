@@ -203,9 +203,10 @@ html.lenis, html.lenis body { height: auto; }
   border: 1px solid color-mix(in oklab, var(--ink-foreground) 14%, transparent);
 }
 @utility glass-light {
-  background: color-mix(in oklab, var(--background) 78%, transparent);
-  backdrop-filter: blur(18px) saturate(1.4);
-  border: 1px solid var(--border);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--background) 62%, transparent), color-mix(in oklab, var(--background) 48%, transparent));
+  backdrop-filter: blur(22px) saturate(1.8);
+  border: 1px solid color-mix(in oklab, var(--foreground) 9%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in oklab, white 55%, transparent), 0 12px 40px -18px color-mix(in oklab, var(--ink) 45%, transparent);
 }
 @utility grain {
   &::after {

@@ -11,14 +11,14 @@ export const dummyAdvertisements: Advertisement[] = [
         id: 'ad001',
         title: 'Grand Opening Offer!',
         description: 'Get 50% off on all listing plans for a limited time. Use code: GRAND50',
-        imageUrl: 'https://placehold.co/600x400',
+        imageUrl: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80',
         isActive: true,
     },
     {
         id: 'ad002',
         title: 'Unlock Unlimited Connections',
         description: 'Subscribe to our unlimited plan and find your perfect roommate today.',
-        imageUrl: 'https://placehold.co/600x400',
+        imageUrl: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80',
         isActive: false,
     }
 ];

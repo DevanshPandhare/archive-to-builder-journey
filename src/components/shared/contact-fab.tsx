@@ -28,10 +28,10 @@ export function ContactFab() {
                 >
                     <Button
                         size="icon"
-                        className="rounded-full bg-green-500 hover:bg-green-600 text-white w-12 h-12 shadow-lg flex items-center justify-center"
+                        className="rounded-full bg-card text-card-foreground border hover:bg-secondary w-11 h-11 shadow-lg flex items-center justify-center"
                         aria-label="WhatsApp"
                     >
-                        <MessageCircle className="w-6 h-6" />
+                        <MessageCircle className="w-5 h-5" />
                     </Button>
                 </a>
                  <a
@@ -43,20 +43,20 @@ export function ContactFab() {
                 >
                     <Button
                         size="icon"
-                        className="rounded-full bg-blue-500 hover:bg-blue-600 text-white w-12 h-12 shadow-lg flex items-center justify-center"
+                        className="rounded-full bg-card text-card-foreground border hover:bg-secondary w-11 h-11 shadow-lg flex items-center justify-center"
                         aria-label="Email Us"
                     >
-                        <Mail className="w-6 h-6" />
+                        <Mail className="w-5 h-5" />
                     </Button>
                 </a>
                 
                 <Button
                     onClick={() => setIsOpen(!isOpen)}
                     size="icon"
-                    className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground w-12 h-12 sm:w-16 sm:h-16 shadow-xl flex items-center justify-center transition-transform duration-300"
+                    className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground w-12 h-12 shadow-lg flex items-center justify-center transition-transform duration-300"
                     style={{ transform: isOpen ? 'rotate(45deg)' : 'none' }}
                 >
-                    <Plus className="w-8 h-8" />
+                    <Plus className="w-5 h-5" />
                     <span className="sr-only">Contact Us</span>
                 </Button>
             </div>

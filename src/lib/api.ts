@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Listing, RoommateProfile } from './types'; 
+import { DEMO_MODE, demoAdapter } from './demo-backend';
 
 // Changed to localhost to match your Google OAuth fix!
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -9,7 +10,11 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  ...(DEMO_MODE ? { adapter: demoAdapter } : {}),
 });
+
+// TEMPORARY: also answer plain axios calls (e.g. payment verification) in demo mode.
+if (DEMO_MODE) axios.defaults.adapter = demoAdapter;
 
 // --- 🔐 AUTHENTICATION INTERCEPTOR ---
 api.interceptors.request.use(
@@ -86,7 +91,7 @@ const adaptRoommateToProfile = (data: any): RoommateProfile => {
         data.has_pets ? 'Has Pets' : 'No Pets'
     ],
     gender: 'Any',
-    images: ['https://placehold.co/400x400'],
+    images: [data.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2e?w=800&q=80'],
     views: 0,
     ownerId: data.user?.toString() || '1',
     hasProperty: false,

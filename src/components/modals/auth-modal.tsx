@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { DEMO_MODE } from '@/lib/demo-backend';
 
 // Works on Vercel (uses NEXT_PUBLIC_API_URL) and Locally (falls back to localhost:8000)
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
@@ -78,6 +79,17 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
     }
   };
 
+  const handleDemoSignIn = () => {
+    localStorage.setItem('access_token', 'demo-access-token');
+    localStorage.setItem('refresh_token', 'demo-refresh-token');
+    localStorage.setItem('is_profile_complete', 'true');
+    localStorage.setItem('user_name', 'Demo User');
+    localStorage.setItem('user_pic', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80');
+    toast({ title: 'Signed in', description: 'You are using a test account.' });
+    onLoginSuccess();
+    onClose();
+  };
+
   const handleCompleteProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -145,6 +157,12 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
                 />
               </GoogleOAuthProvider>
             </div>
+            {DEMO_MODE && (
+              <div className="space-y-2 border-t pt-4">
+                <Button className="w-full" onClick={handleDemoSignIn}>Continue with test account</Button>
+                <p className="text-center text-xs text-muted-foreground">Temporary — for testing until the backend is connected.</p>
+              </div>
+            )}
           </>
         ) : (
           <>
