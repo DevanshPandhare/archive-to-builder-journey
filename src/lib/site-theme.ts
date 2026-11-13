@@ -23,14 +23,14 @@ export const PRESETS: SiteTheme[] = [
 ];
 
 const VAR_MAP: Record<keyof Omit<SiteTheme, "name">, string[]> = {
-  background: ["--background"],
-  foreground: ["--foreground"],
-  card: ["--card", "--popover"],
-  cardForeground: ["--card-foreground", "--popover-foreground"],
-  primary: ["--primary", "--ring"],
-  primaryForeground: ["--primary-foreground"],
-  accent: ["--accent"],
-  accentForeground: ["--accent-foreground"],
+  background: ["--property-secondary"],
+  foreground: ["--property-secondary-foreground"],
+  card: ["--property-card"],
+  cardForeground: ["--property-card-foreground"],
+  primary: ["--property-primary"],
+  primaryForeground: ["--property-primary-foreground"],
+  accent: ["--property-accent"],
+  accentForeground: ["--property-accent-foreground"],
 };
 
 export function applyTheme(theme: SiteTheme | null) {

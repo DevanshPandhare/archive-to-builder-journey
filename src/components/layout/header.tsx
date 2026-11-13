@@ -27,32 +27,32 @@ const NavLink: React.FC<NavLinkProps> = ({ page, activePage, onClick, children, 
   if (isMobile) {
     return (
       <SheetClose asChild>
-        <button
+        <Button variant="ghost"
           onClick={() => onClick(page)}
           className={cn(
-            "flex items-center w-full p-3 rounded-lg gap-3 transition-colors",
-            isActive ? "bg-primary/10 text-primary" : "text-foreground/70 hover:bg-muted"
+             "flex h-auto justify-start items-center w-full p-3 rounded-lg gap-3 transition-colors",
+             isActive ? "bg-nav-selected text-nav-selected-foreground hover:bg-nav-selected hover:text-nav-selected-foreground" : "text-foreground/70 hover:bg-muted"
           )}
         >
           {children}
-        </button>
+        </Button>
       </SheetClose>
     );
   }
 
   return (
-    <button
+    <Button variant="ghost" aria-current={isActive ? "page" : undefined}
       onClick={() => onClick(page)}
       className={cn(
-        "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
-        isActive ? "text-accent-foreground" : "opacity-75 hover:opacity-100"
+        "relative rounded-lg px-4 py-2 text-sm font-medium transition-colors hover:bg-nav-selected/15 hover:text-inherit",
+        isActive ? "text-nav-selected-foreground" : "opacity-80 hover:opacity-100"
       )}
     >
       {isActive && (
-        <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-full bg-brass" transition={{ type: "spring", stiffness: 380, damping: 30 }} />
+        <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-lg bg-nav-selected" transition={{ type: "spring", stiffness: 380, damping: 30 }} />
       )}
       <span className="relative">{children}</span>
-    </button>
+    </Button>
   );
 };
 
@@ -157,8 +157,8 @@ export function Header({
     <>
     <motion.header initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5">
-      <div className={cn("container mx-auto flex h-16 items-center justify-between rounded-full transition-all duration-500",
-        overHero ? "bg-transparent text-ink-foreground" : "glass-light text-foreground shadow-luxe")}>
+      <div className={cn("container mx-auto flex h-16 items-center justify-between rounded-xl transition-colors duration-300",
+        overHero ? "bg-transparent text-ink-foreground" : "header-glass text-foreground")}>
         <Link to="/" className="flex items-center gap-2" onClick={() => setActivePage('home')}>
             <Logo className="h-8 w-8 md:h-10 md:w-10" />
             <span className="font-display text-xl md:text-2xl">SetMyStay</span>

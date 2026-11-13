@@ -7,11 +7,11 @@ import { DEMO_MODE, resetDemoData } from "@/lib/demo-backend";
 import { PRESETS, loadTheme, saveTheme, applyTheme, type SiteTheme } from "@/lib/site-theme";
 
 const FIELDS: { key: keyof Omit<SiteTheme, "name">; label: string }[] = [
-  { key: "background", label: "Page background" },
-  { key: "foreground", label: "Page text" },
+  { key: "background", label: "Feature tag background" },
+  { key: "foreground", label: "Feature tag text" },
   { key: "card", label: "Card background" },
   { key: "cardForeground", label: "Card text" },
-  { key: "primary", label: "Main colour (buttons, headings)" },
+  { key: "primary", label: "Card heading and price" },
   { key: "primaryForeground", label: "Text on main colour" },
   { key: "accent", label: "Highlight colour" },
   { key: "accentForeground", label: "Text on highlight" },
@@ -31,21 +31,22 @@ export function ThemeCustomizer() {
   };
 
   return (
-    <Card>
+    <section className="space-y-6">
       <CardHeader>
-        <CardTitle>Website Colours</CardTitle>
-        <CardDescription>Pick a festival theme or set your own colours. Changes preview instantly; click Save to keep them.</CardDescription>
+        <CardTitle>Property Card Colours</CardTitle>
+        <CardDescription>Festival palettes for property listings.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
         <div>
           <Label className="mb-3 block">Ready-made themes</Label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {PRESETS.map((p) => (
-              <button
+              <Button
+                variant="outline"
                 key={p.name}
                 type="button"
                 onClick={() => update(p)}
-                className={`rounded-xl border p-3 text-left transition hover:shadow-md ${theme.name === p.name ? "ring-2 ring-ring" : ""}`}
+                className={`h-auto flex-col items-start rounded-lg border p-3 text-left ${theme.name === p.name ? "ring-2 ring-ring" : ""}`}
               >
                 <div className="flex gap-1 mb-2">
                   {[p.primary, p.accent, p.background, p.card].map((c, i) => (
@@ -53,7 +54,7 @@ export function ThemeCustomizer() {
                   ))}
                 </div>
                 <span className="text-sm font-medium">{p.name}</span>
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -75,24 +76,24 @@ export function ThemeCustomizer() {
           </div>
         </div>
 
-        <div className="rounded-xl p-6 bg-background text-foreground border">
+        <div>
           <p className="text-sm mb-3">Preview</p>
-          <div className="rounded-xl p-4 bg-card text-card-foreground shadow">
+          <div className="property-theme max-w-sm rounded-lg border p-5 bg-card text-card-foreground">
             <h4 className="font-bold text-primary">Sample property card</h4>
-            <p className="text-sm opacity-80">2 BHK in Bandra, Mumbai</p>
+            <p className="text-sm text-muted-foreground">2 BHK in Bandra, Mumbai</p>
             <div className="mt-3 flex gap-2">
-              <Button size="sm">Main button</Button>
+              <span className="font-semibold text-primary">₹28,000 / month</span>
               <span className="rounded-full px-3 py-1 text-xs bg-accent text-accent-foreground">Highlight</span>
             </div>
           </div>
         </div>
 
         <div className="flex gap-3">
-          <Button onClick={() => { saveTheme(theme); toast.success("Website colours saved"); }}>Save colours</Button>
+          <Button onClick={() => { saveTheme(theme); toast.success("Property card colours saved"); }}>Save colours</Button>
           <Button variant="outline" onClick={() => { saveTheme(null); setTheme(PRESETS[0]); toast.success("Reset to original colours"); }}>Reset to original</Button>
         </div>
       </CardContent>
-    </Card>
+    </section>
   );
 }
 

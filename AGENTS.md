@@ -28,3 +28,6 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Presentation architecture
+- Store Appearance overrides as prefixed property tokens and opt in through `.property-theme`; global and roommate surfaces must remain isolated from listing customisation.

@@ -39,7 +39,7 @@ export function Footer({ onNavigate }: FooterProps) {
   return (
     <footer className="bg-ink text-ink-foreground/70">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
-        <p className="mb-20 font-display text-[clamp(3rem,12vw,10rem)] font-light leading-none text-ink-foreground">Set my <em className="text-brass">stay.</em></p>
+        <p className="mb-12 font-display text-4xl font-semibold text-ink-foreground">SetMyStay</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           
           <div className="space-y-4">

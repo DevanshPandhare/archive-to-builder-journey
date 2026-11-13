@@ -52,7 +52,10 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-code: var(--font-source-code-pro), ui-monospace, monospace;
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-nav-selected: var(--nav-selected);
+  --color-nav-selected-foreground: var(--nav-selected-foreground);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-ink: var(--ink);
@@ -62,22 +65,22 @@
 }
 
 :root {
-  --radius: 1.1rem;
-  --font-inter: "Manrope";
+  --radius: 0.5rem;
+  --font-inter: "IBM Plex Sans";
   --font-source-code-pro: "JetBrains Mono";
-  --background: oklch(0.975 0.008 85);
+  --background: oklch(0.985 0.002 150);
   --foreground: oklch(0.19 0.02 262);
-  --card: oklch(0.995 0.004 85);
+  --card: oklch(1 0 0);
   --card-foreground: oklch(0.19 0.02 262);
   --popover: oklch(0.995 0.004 85);
   --popover-foreground: oklch(0.19 0.02 262);
-  --primary: oklch(0.21 0.03 262);
+  --primary: oklch(0.38 0.07 166);
   --primary-foreground: oklch(0.97 0.01 85);
-  --secondary: oklch(0.94 0.012 85);
+  --secondary: oklch(0.95 0.005 150);
   --secondary-foreground: oklch(0.21 0.03 262);
-  --muted: oklch(0.94 0.012 85);
+  --muted: oklch(0.95 0.005 150);
   --muted-foreground: oklch(0.5 0.02 262);
-  --accent: oklch(0.76 0.12 72);
+  --accent: oklch(0.88 0.04 160);
   --accent-foreground: oklch(0.18 0.02 262);
   --destructive: oklch(0.6 0.21 25);
   --destructive-foreground: oklch(0.98 0.005 85);
@@ -85,13 +88,17 @@
   --success-foreground: oklch(0.99 0 0);
   --ink: oklch(0.15 0.02 262);
   --ink-foreground: oklch(0.96 0.012 85);
-  --border: oklch(0.9 0.012 85);
-  --input: oklch(0.9 0.012 85);
-  --ring: oklch(0.76 0.12 72);
-  --gradient-brass: linear-gradient(120deg, oklch(0.84 0.1 82), oklch(0.7 0.13 62));
+  --border: oklch(0.9 0.005 150);
+  --input: oklch(0.9 0.005 150);
+  --ring: oklch(0.48 0.08 166);
+  --nav-selected: oklch(0.38 0.07 166);
+  --nav-selected-foreground: oklch(0.99 0 0);
+  --header-glass: color-mix(in oklab, var(--background) 78%, transparent);
+  --header-shadow: 0 4px 24px -12px color-mix(in oklab, var(--ink) 24%, transparent);
+  --gradient-brass: linear-gradient(var(--accent), var(--accent));
   --gradient-ink: linear-gradient(180deg, oklch(0.15 0.02 262 / 0.2), oklch(0.15 0.02 262 / 0.55) 55%, oklch(0.15 0.02 262));
   --shadow-luxe: 0 30px 60px -25px oklch(0.15 0.02 262 / 0.35);
-  --shadow-glow: 0 0 0 1px oklch(0.76 0.12 72 / 0.4), 0 20px 50px -15px oklch(0.76 0.12 72 / 0.5);
+  --shadow-glow: 0 2px 8px -4px color-mix(in oklab, var(--ink) 20%, transparent);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -151,9 +158,31 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-body);
+    letter-spacing: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+}
+
+/* Appearance overrides inherit only inside actual property cards. */
+.property-theme {
+  --card: var(--property-card, var(--background));
+  --card-foreground: var(--property-card-foreground, var(--foreground));
+  --primary: var(--property-primary, var(--foreground));
+  --primary-foreground: var(--property-primary-foreground, var(--background));
+  --secondary: var(--property-secondary, var(--muted));
+  --secondary-foreground: var(--property-secondary-foreground, var(--foreground));
+  --accent: var(--property-accent, var(--success));
+  --accent-foreground: var(--property-accent-foreground, var(--background));
+  --muted-foreground: color-mix(in oklab, var(--card-foreground) 72%, var(--card));
+  --border: color-mix(in oklab, var(--card-foreground) 15%, var(--card));
+}
+
+@utility header-glass {
+  background: var(--header-glass);
+  backdrop-filter: blur(20px) saturate(1.3);
+  border: 1px solid color-mix(in oklab, var(--foreground) 10%, transparent);
+  box-shadow: var(--header-shadow);
 }
 
 @keyframes skyline-pan {
@@ -221,7 +250,7 @@ html.lenis, html.lenis body { height: auto; }
 
 /* Lighter effects on small / touch screens so scrolling stays smooth on budget phones */
 @media (max-width: 767px), (pointer: coarse) {
-  .glass, .glass-light { backdrop-filter: blur(10px) saturate(1.3); }
+  .glass, .glass-light, .header-glass { backdrop-filter: blur(10px) saturate(1.3); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
