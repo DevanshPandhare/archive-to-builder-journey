@@ -151,7 +151,7 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="w-[calc(100%-2.5rem)] max-w-[360px] rounded-3xl p-5 sm:p-6 shadow-2xl">
         {step === 'login' ? (
           <>
             <DialogHeader>
@@ -160,7 +160,7 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
                 Sign in to manage your property listings.
               </DialogDescription>
             </DialogHeader>
-            <div ref={googleWrapRef} className="flex justify-center py-6 w-full">
+            <div ref={googleWrapRef} className="flex justify-center py-4 w-full">
               <GoogleOAuthProvider clientId="567107261238-gujakiaj292e4fm7kk5t74k15j1umgno.apps.googleusercontent.com">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
