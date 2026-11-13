@@ -40,16 +40,23 @@ const FormField = <
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
   const itemContext = React.useContext(FormItemContext);
-  const { getFieldState, formState } = useFormContext();
+  const formContext = useFormContext();
 
-  if (!fieldContext) {
-    throw new Error("useFormField should be used within <FormField>");
+  // Tolerate standalone usage (e.g. a FormLabel outside a FormField),
+  // matching the lenient shadcn variant this project was built with.
+  if (!fieldContext || !itemContext || !formContext) {
+    const fallbackId = React.useId();
+    return {
+      id: fallbackId,
+      name: "",
+      formItemId: `${fallbackId}-form-item`,
+      formDescriptionId: `${fallbackId}-form-item-description`,
+      formMessageId: `${fallbackId}-form-item-message`,
+      error: undefined,
+    };
   }
 
-  if (!itemContext) {
-    throw new Error("useFormField should be used within <FormItem>");
-  }
-
+  const { getFieldState, formState } = formContext;
   const fieldState = getFieldState(fieldContext.name, formState);
 
   const { id } = itemContext;
