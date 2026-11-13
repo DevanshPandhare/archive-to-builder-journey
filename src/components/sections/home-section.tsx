@@ -31,7 +31,6 @@ const steps = [
   { icon: ShieldCheck, title: "Unlock", text: "Get owner contact details instantly with a simple plan." },
   { icon: KeyRound, title: "Move in", text: "Visit, connect directly, and get your keys — no brokers." },
 ];
-const cities = ["Navi Mumbai", "Mumbai", "Pune", "Bengaluru", "Hyderabad", "Delhi NCR", "Thane", "Chennai"];
 
 export function HomeSection({ featuredProperties, featuredRoommates, onViewDetails, onNavigate, likedItemIds, onToggleLike, unlockedIds }: HomeSectionProps) {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -70,13 +69,6 @@ export function HomeSection({ featuredProperties, featuredRoommates, onViewDetai
           Scroll <ChevronDown className="h-4 w-4 animate-scroll-cue" />
         </div>
       </section>
-
-      {/* MARQUEE */}
-      <div className="overflow-hidden border-y border-border bg-background py-6">
-        <div className="container flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
-          {cities.map((c) => <span key={c}>{c}</span>)}
-        </div>
-      </div>
 
       {/* SERVICES */}
       <section className="container py-16 sm:py-24">

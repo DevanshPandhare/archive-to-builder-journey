@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,20 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
   const [step, setStep] = useState<'login' | 'complete_profile'>('login');
   const [phoneNumber, setPhoneNumber] = useState('');
   const { toast } = useToast();
+  const googleWrapRef = useRef<HTMLDivElement>(null);
+  const [googleWidth, setGoogleWidth] = useState(280);
+
+  // Measure the available width so the Google button fills the modal on any screen size
+  useEffect(() => {
+    if (!isOpen) return;
+    const el = googleWrapRef.current;
+    if (!el) return;
+    const update = () => setGoogleWidth(Math.max(200, Math.min(400, Math.floor(el.clientWidth))));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isOpen]);
 
   // Check on mount to see if they are already logged in but missing their profile
   useEffect(() => {
@@ -146,14 +160,17 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess }: AuthModalProps) {
                 Sign in to manage your property listings.
               </DialogDescription>
             </DialogHeader>
-            <div className="flex justify-center py-6">
+            <div ref={googleWrapRef} className="flex justify-center py-6 w-full">
               <GoogleOAuthProvider clientId="567107261238-gujakiaj292e4fm7kk5t74k15j1umgno.apps.googleusercontent.com">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() => {
                     toast({ title: "Error", description: "Google Login Failed", variant: "destructive" });
                   }}
-                  useOneTap
+                  width={googleWidth}
+                  shape="pill"
+                  size="large"
+                  text="continue_with"
                 />
               </GoogleOAuthProvider>
             </div>
