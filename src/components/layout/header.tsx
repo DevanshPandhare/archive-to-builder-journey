@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X, Crown, User, Home, Users, Building, BedDouble, PlusCircle, Heart, LogOut, History, Briefcase, CheckCircle, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,14 +44,14 @@ const NavLink: React.FC<NavLinkProps> = ({ page, activePage, onClick, children, 
     <button
       onClick={() => onClick(page)}
       className={cn(
-        "relative py-2 text-sm font-medium transition-colors hover:text-primary",
-        isActive ? "text-primary" : "text-foreground/60"
+        "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
+        isActive ? "text-accent-foreground" : "opacity-75 hover:opacity-100"
       )}
     >
-      {children}
       {isActive && (
-        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full" />
+        <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-full bg-brass" transition={{ type: "spring", stiffness: 380, damping: 30 }} />
       )}
+      <span className="relative">{children}</span>
     </button>
   );
 };
@@ -99,6 +100,14 @@ export function Header({
     }
   }, [onSignInClick, isLoggedIn]); // Re-run this if their login status changes
 
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    const on = () => setScrolled(window.scrollY > 40);
+    on(); window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, []);
+  const overHero = activePage === "home" && !scrolled;
+
   const navItems = [
     { page: 'home' as Page, label: 'Home', icon: <Home className="w-5 h-5" /> },
     { page: 'pg' as Page, label: 'PG Listings', icon: <BedDouble className="w-5 h-5" /> },
@@ -146,14 +155,16 @@ export function Header({
 
   return (
     <>
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur-sm">
-      <div className="container mx-auto flex h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+    <motion.header initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-5">
+      <div className={cn("container mx-auto flex h-16 items-center justify-between rounded-full transition-all duration-500",
+        overHero ? "bg-transparent text-ink-foreground" : "glass-light text-foreground shadow-luxe")}>
         <Link to="/" className="flex items-center gap-2" onClick={() => setActivePage('home')}>
             <Logo className="h-8 w-8 md:h-10 md:w-10" />
-            <span className="text-lg font-bold md:text-xl text-gray-800">SetMyStay</span>
+            <span className="font-display text-xl md:text-2xl">SetMyStay</span>
         </Link>
 
-        <nav className="hidden lg:flex items-center space-x-6">
+        <nav className="hidden lg:flex items-center gap-1">
           {navItems.map(item => (
             <NavLink key={item.page} page={item.page} activePage={activePage} onClick={setActivePage}>
               {item.label}
@@ -164,14 +175,14 @@ export function Header({
         <div className="flex items-center gap-2">
           {/* Desktop buttons */}
           <div className="hidden lg:flex items-center gap-2">
-            <Button variant="default" size="sm" onClick={onSubscriptionClick}>
+            <Button variant={overHero ? "glass" : "ghost"} size="sm" className="rounded-full h-10 px-4" onClick={onSubscriptionClick}>
               <Crown className="w-4 h-4 mr-2" />
               Pricing
             </Button>
             {isLoggedIn ? (
                <UserMenu />
             ) : (
-              <Button variant="default" size="sm" onClick={onSignInClick}>
+              <Button variant="brass" size="sm" className="rounded-full h-10 px-5" onClick={onSignInClick}>
                 <User className="w-4 h-4 mr-2" />
                 Sign In
               </Button>
@@ -192,7 +203,7 @@ export function Header({
                      <SheetClose asChild>
                        <Link to="/" className="flex items-center gap-2" onClick={() => setActivePage('home')}>
                          <Logo className="w-8 h-8" />
-                         <span className="text-lg font-semibold text-gray-800">SetMyStay</span>
+                         <span className="font-display text-xl">SetMyStay</span>
                        </Link>
                      </SheetClose>
                     <SheetClose asChild>
@@ -237,7 +248,7 @@ export function Header({
           </div>
         </div>
       </div>
-    </header>
+    </motion.header>
     </>
   );
 }

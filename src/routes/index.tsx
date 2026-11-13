@@ -568,7 +568,7 @@ function Home() {
         onHistoryClick={() => setHistoryModalOpen(true)}
       />
       
-      <main key={activePage} className="flex-grow animate-page-in">
+      <main key={activePage} className={`flex-grow animate-page-in ${activePage === "home" ? "" : "pt-24"}`}>
         {activePage === 'home' && (
           <HomeSection 
             featuredProperties={featuredProperties} 

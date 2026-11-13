@@ -17,7 +17,8 @@ import { AutocompleteInput } from '@/components/shared/autocomplete-input';
 import { indianStates } from '@/lib/states';
 import { allIndianCities, indianCitiesByState, City } from '@/lib/cities';
 import { indianAreas } from '@/lib/areas';
-import { Heart, Filter, LayoutGrid, List, Bell } from 'lucide-react';
+import { Heart, Filter, LayoutGrid, List, Bell, Layers } from 'lucide-react';
+import { SwipeDeck } from '@/components/shared/swipe-deck';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
@@ -202,7 +203,7 @@ export function ListingsSection({
   const [filters, setFilters] = useState<FilterState>({ ...initialFilters, ...initialSearchFilters });
   const [pageTitle, setPageTitle] = useState('');
   const [pageDescription, setPageDescription] = useState('');
-  const [layout, setLayout] = useState<'grid' | 'list'>('grid');
+  const [layout, setLayout] = useState<'grid' | 'list' | 'swipe'>('grid');
   
   useEffect(() => {
     if (initialSearchFilters) {
@@ -291,7 +292,7 @@ export function ListingsSection({
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight">{pageTitle}</h1>
+        <h1 className="font-display text-5xl font-light tracking-tight">{pageTitle}</h1>
         <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">{pageDescription}</p>
       </div>
 
@@ -355,17 +356,23 @@ export function ListingsSection({
               </Sheet>
             </div>
             <p className="text-sm text-muted-foreground hidden md:block">{filteredListings.length} results found</p>
-            <ToggleGroup type="single" value={layout} onValueChange={(value: 'grid' | 'list') => value && setLayout(value)} aria-label="Layout options">
+            <ToggleGroup type="single" value={layout} onValueChange={(value: 'grid' | 'list' | 'swipe') => value && setLayout(value)} aria-label="Layout options">
                 <ToggleGroupItem value="grid" aria-label="Grid view">
                     <LayoutGrid className="h-4 w-4" />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="swipe" aria-label="Swipe view">
+                    <Layers className="h-4 w-4" />
                 </ToggleGroupItem>
                 <ToggleGroupItem value="list" aria-label="List view">
                     <List className="h-4 w-4" />
                 </ToggleGroupItem>
             </ToggleGroup>
           </div>
+          {layout === 'swipe' && filteredListings.length > 0 && (
+            <SwipeDeck items={filteredListings} likedItemIds={likedItemIds} onToggleLike={onToggleLike} onViewDetails={(i, t) => onViewDetails(i, t)} className="py-6" />
+          )}
           <div className={cn(
-            "grid gap-6",
+            "grid gap-6", layout === 'swipe' && "hidden",
             layout === 'grid' ? "sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"
           )}>
             {filteredListings.map(item => {
