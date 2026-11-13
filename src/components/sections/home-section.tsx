@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
+import { useLiteMode } from "@/lib/perf";
 import { ArrowRight, ArrowUpRight, BedDouble, Building2, Users, ShieldCheck, Search, KeyRound, ChevronDown } from "lucide-react";
 import type { Listing, RoommateProfile, Page } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -39,15 +40,16 @@ export function HomeSection({ featuredProperties, featuredRoommates, onViewDetai
   const contentY = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
   const [deck, setDeck] = useState<"homes" | "roommates">("homes");
+  const lite = useLiteMode();
 
   return (
     <div>
       {/* HERO */}
       <section ref={heroRef} className="relative h-[100svh] min-h-[640px] overflow-hidden bg-ink grain">
-        <motion.video style={{ scale: videoScale }} autoPlay loop muted playsInline preload="auto"
+        <motion.video style={lite ? undefined : { scale: videoScale }} autoPlay loop muted playsInline preload="auto"
           className="absolute inset-0 h-full w-full object-cover" src={heroVideo.url} />
         <div className="absolute inset-0 bg-ink-fade" />
-        <motion.div style={{ y: contentY, opacity: contentOpacity }}
+        <motion.div style={lite ? undefined : { y: contentY, opacity: contentOpacity }}
           className="container relative z-10 flex h-full flex-col justify-end pb-24 sm:pb-28 text-ink-foreground">
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.8 }}
             className="mb-6 inline-flex w-fit items-center gap-2 glass rounded-full px-4 py-1.5 text-xs uppercase tracking-[0.3em]">
@@ -59,11 +61,11 @@ export function HomeSection({ featuredProperties, featuredRoommates, onViewDetai
             <span className="italic text-brass"><SplitWords text="should feel like you." delay={0.6} /></span>
           </h1>
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.2, duration: 0.9 }}
-            className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <p className="max-w-md text-lg text-ink-foreground/75">
+            className="mt-8 sm:mt-10 flex flex-col gap-6 sm:gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <p className="max-w-md text-base sm:text-lg text-ink-foreground/75">
               Roommates, rentals and co-living — handpicked, verified and priced in the open.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap [&>*:first-child]:col-span-2 sm:[&>*:first-child]:col-span-1">
               <Button variant="brass" size="xl" onClick={() => onNavigate("rentals")}>Explore homes <ArrowRight className="ml-1 h-5 w-5" /></Button>
               <Button variant="glass" size="xl" onClick={() => onNavigate("roommates")}>Find roommates</Button>
               <Button variant="glass" size="xl" onClick={() => onNavigate("pg")}>Co-living / PG</Button>
@@ -108,7 +110,7 @@ export function HomeSection({ featuredProperties, featuredRoommates, onViewDetai
 
       {/* SWIPE */}
       <section className="relative overflow-hidden bg-ink py-28 sm:py-36 text-ink-foreground grain">
-        <div className="pointer-events-none absolute -top-40 right-0 h-[500px] w-[500px] rounded-full bg-brass opacity-20 blur-[120px]" />
+        <div className="pointer-events-none absolute -top-40 right-0 hidden md:block h-[500px] w-[500px] rounded-full bg-brass opacity-20 blur-[120px]" />
         <div className="container grid items-center gap-16 lg:grid-cols-2">
           <Reveal>
             <p className="text-xs uppercase tracking-[0.3em] text-accent">Swipe to discover</p>
@@ -167,7 +169,7 @@ export function HomeSection({ featuredProperties, featuredRoommates, onViewDetai
       <section className="container pb-28">
         <Reveal>
           <div className="relative overflow-hidden rounded-[2.5rem] bg-ink px-8 py-20 text-center text-ink-foreground sm:px-16 grain">
-            <video autoPlay loop muted playsInline src={heroVideo.url} className="absolute inset-0 h-full w-full object-cover opacity-25" />
+            {!lite && <video autoPlay loop muted playsInline preload="none" src={heroVideo.url} className="absolute inset-0 h-full w-full object-cover opacity-25" />}
             <div className="relative">
               <h2 className="font-display text-4xl sm:text-6xl font-light">Own a property? <em className="text-brass">Fill it faster.</em></h2>
               <p className="mx-auto mt-5 max-w-lg text-ink-foreground/70">List in minutes and reach verified tenants and roommates across India.</p>

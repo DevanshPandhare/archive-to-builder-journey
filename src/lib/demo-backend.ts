@@ -26,7 +26,76 @@ type DB = {
   properties: any[]; roommates: any[]; coupons: any[]; ads: any[]; staff: any[];
   purchases: any[]; favorites: string[]; nextId: number;
 };
-const KEY = "setmystay_demo_db_v1";
+const KEY = "setmystay_demo_db_v2";
+
+
+const CITIES: [string, string[]][] = [
+  ["Navi Mumbai", ["Vashi", "Kharghar", "Nerul", "CBD Belapur", "Airoli"]],
+  ["Mumbai", ["Andheri West", "Bandra", "Powai", "Malad", "Lower Parel"]],
+  ["Pune", ["Kothrud", "Baner", "Hinjewadi", "Viman Nagar"]],
+  ["Bengaluru", ["Koramangala", "HSR Layout", "Indiranagar", "Whitefield"]],
+  ["Thane", ["Ghodbunder Road", "Majiwada"]],
+];
+const OWNERS = ["Anil Desai", "Priya Nair", "Sanjay Kulkarni", "Meera Iyer", "Farhan Shaikh", "Kavita Joshi", "Rakesh Patil", "Neha Kapoor"];
+const AMEN = ["WiFi", "AC", "Parking", "Lift", "Power Backup", "Gym", "Security", "Meals", "Laundry", "Housekeeping", "Balcony", "Swimming Pool"];
+const FURN = ["Furnished", "Semi-Furnished", "Unfurnished"];
+const TITLES: Record<string, string[]> = {
+  PG: ["Girls PG with Meals", "Boys PG near Metro", "Co-living Studio", "Premium Twin-Sharing PG", "Executive Single Room PG"],
+  RENTAL: ["Spacious 2BHK with Balcony", "Sea-facing 1BHK", "Modern 3BHK in Gated Society", "Cozy 1RK for Students", "Duplex 4BHK with Terrace"],
+  ROOMMATE: ["Room in Shared 2BHK", "Private Room in 3BHK Flat", "Shared Room near IT Park"],
+};
+const PEOPLE = [
+  ["Aarav Mehta", "Male", 24, "Software engineer, early riser, loves cooking on weekends."],
+  ["Isha Reddy", "Female", 26, "UX designer who keeps things tidy and enjoys quiet evenings."],
+  ["Kabir Singh", "Male", 29, "Finance analyst, gym regular, looking for a calm flatmate."],
+  ["Ananya Rao", "Female", 23, "Post-grad student, vegetarian, plant lover."],
+  ["Rohan Verma", "Male", 27, "Product manager, travels often, very easy-going."],
+  ["Sneha Kulkarni", "Female", 25, "Doctor on rotating shifts, values cleanliness."],
+  ["Vikram Iyer", "Male", 31, "Musician and teacher, friendly and respectful of space."],
+  ["Tanya Bhatia", "Female", 28, "Marketing lead, foodie, open to pets."],
+];
+const PREFS = ["Non-Smoker", "Vegetarian", "Clean", "Early Riser", "Night Owl", "Pet Friendly", "Working Professional", "Student", "No Parties"];
+const pick = <T,>(a: T[], i: number) => a[i % a.length];
+
+function generated(start: number) {
+  const props: any[] = []; let id = start;
+  const types = ["PG", "RENTAL", "ROOMMATE"];
+  for (let i = 0; i < 27; i++) {
+    const t = types[i % 3]; const [city, areas] = pick(CITIES, i); const area = pick(areas, i * 3 + 1);
+    const rent = t === "PG" ? 7000 + (i * 1300) % 12000 : t === "RENTAL" ? 15000 + (i * 4700) % 60000 : 9000 + (i * 1900) % 14000;
+    const status = i % 9 === 4 ? "PENDING" : i % 13 === 7 ? "REJECTED" : "APPROVED";
+    props.push({
+      id: ++id, property_type: t, title: pick(TITLES[t], i), rent, sq_ft: 180 + (i * 137) % 1400, city, area,
+      address: `${100 + i}, ${pick(["Sai Heights", "Green Valley", "Lake View", "Sunrise Towers", "Orchid Residency"], i)}, ${area}, ${city}`,
+      owner_name: pick(OWNERS, i), phone_primary: `+9198${String(20000000 + i * 734821).slice(0, 8)}`,
+      description: `Well-maintained ${pick(TITLES[t], i).toLowerCase()} in ${area}. Close to public transport, markets and offices. Available for immediate move-in.`,
+      furnishing: pick(FURN, i), amenities: AMEN.filter((_, k) => (k + i) % 3 !== 0).slice(0, 4 + (i % 5)).map((name) => ({ name })),
+      images: [0, 1, 2, 3].map((k) => ({ image_url: HOME_IMG[(i + k) % HOME_IMG.length] })),
+      owner: i % 6 === 0 ? "demo-user" : `owner-${i}`, is_broker: i % 5 === 0,
+      created_at: new Date(Date.now() - (i + 2) * 43200000).toISOString(), status,
+    });
+  }
+  const mates = PEOPLE.map(([name, gender, age, bio], i) => {
+    const [city, areas] = pick(CITIES, i + 1);
+    return {
+      id: ++id, user_name: name, gender, age, bio, city, location_preference: pick(areas, i),
+      budget: 8000 + (i * 2500) % 18000, phone_primary: `+9197${String(30000000 + i * 913457).slice(0, 8)}`,
+      preferences: PREFS.filter((_, k) => (k + i) % 3 === 0).slice(0, 4), has_property: i % 2 === 0,
+      user: 200 + i, created_at: new Date(Date.now() - i * 72000000).toISOString(),
+      status: i === 5 ? "PENDING" : "APPROVED", image: FACE_IMG[i % FACE_IMG.length],
+    };
+  });
+  return { props, mates, next: id };
+}
+
+function seedPurchases() {
+  const plans: [string, number][] = [["Basic Unlock", 99], ["Premium Plan", 299], ["Unlimited Plan", 599], ["Property Listing Fee", 499]];
+  return Array.from({ length: 14 }, (_, i) => ({
+    id: String(5000 + i), user_name: pick(["Aarav Mehta", "Isha Reddy", "Kabir Singh", "Tanya Bhatia", "Demo User"], i),
+    user_email: `user${i}@example.com`, plan_name: pick(plans, i)[0], amount: String(pick(plans, i)[1]),
+    razorpay_payment_id: `pay_demo${100000 + i * 7919}`, created_at: new Date(Date.now() - i * 26 * 3600000).toISOString(), status: "SUCCESS",
+  }));
+}
 
 function seed(): DB {
   const typeMap: Record<string, string> = { PG: "PG", Rental: "RENTAL", Roommate: "ROOMMATE" };
@@ -46,12 +115,13 @@ function seed(): DB {
     created_at: new Date(Date.now() - i * 86400000).toISOString(), status: "APPROVED",
     image: FACE_IMG[i % FACE_IMG.length],
   }));
+  const g = generated(100);
   return {
-    properties, roommates,
+    properties: [...properties, ...g.props], roommates: [...roommates.map((r, i) => ({ ...r, has_property: i % 2 === 0 })), ...g.mates],
     coupons: dummyCoupons.map((c: any, i) => ({ id: i + 1, code: c.code, discount_percentage: c.discountPercentage, is_active: c.isActive })),
     ads: dummyAdvertisements.map((a: any, i) => ({ ...a, id: i + 1, is_active: a.isActive })),
     staff: dummyStaff.map((s: any, i) => ({ id: i + 1, first_name: s.name, username: s.userId, approved_count: 4 + i, rejected_count: i, avg_processing_hours: 3 + i })),
-    purchases: [], favorites: [], nextId: 1000,
+    purchases: seedPurchases(), favorites: [], nextId: g.next + 1000,
   };
 }
 
@@ -147,7 +217,8 @@ function handle(method: string, url: string, body: Record<string, any>): [number
       created_at: new Date().toISOString(), status: "SUCCESS",
     }); save(); return [200, { status: "ok" }];
   }
-  if (p === "/payments/my-history/" || p === "/payments/all-history/") return [200, d.purchases];
+  if (p === "/payments/my-history/") return [200, d.purchases.filter((x) => x.user_name === "Demo User" || x.user_name === localStorage.getItem("user_name"))];
+  if (p === "/payments/all-history/") return [200, d.purchases];
 
   return [200, {}];
 }
@@ -157,6 +228,9 @@ export const demoAdapter: AxiosAdapter = async (config: InternalAxiosRequestConf
   const [status, data] = handle((config.method || "get").toLowerCase(), config.url || "", parseBody(config.data));
   return { data, status, statusText: "OK", headers: {}, config, request: {} };
 };
+
+/** Wipe test data back to the starting set. */
+export function resetDemoData() { cache = seed(); save(); }
 
 /** Fake Razorpay checkout so payments can be tested end to end. */
 export function installDemoRazorpay() {

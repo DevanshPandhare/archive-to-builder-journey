@@ -1,8 +1,10 @@
 import { useEffect } from "react";
+import { detectLowEnd, isTouch } from "@/lib/perf";
 
 export function SmoothScroll() {
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Native scrolling is smoother on touch screens and weak hardware.
+    if (detectLowEnd() || isTouch()) return;
     let raf = 0;
     let lenis: { raf: (t: number) => void; destroy: () => void } | null = null;
     import("lenis").then(({ default: Lenis }) => {

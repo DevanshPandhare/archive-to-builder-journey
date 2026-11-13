@@ -51,7 +51,7 @@ import { format, startOfWeek, addDays, getWeek, formatDistanceToNow, differenceI
 import { cn } from '@/lib/utils';
 import { getFromLocalStorage, saveToLocalStorage } from '@/lib/storage';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { ThemeCustomizer } from '@/components/admin/theme-customizer';
+import { ThemeCustomizer, DemoDataCard } from '@/components/admin/theme-customizer';
 
 // Default credentials for the very first run
 const DEFAULT_ADMIN_PASSWORD = 'Bluechip@123';
@@ -1682,6 +1682,7 @@ function AdminDashboard() {
 
                 <TabsContent value="appearance">
                     <ThemeCustomizer />
+                    <DemoDataCard />
                 </TabsContent>
 
                 {/* 👇 NEW PURCHASES TAB CONTENT 👇 */}

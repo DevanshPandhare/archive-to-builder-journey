@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { DEMO_MODE, resetDemoData } from "@/lib/demo-backend";
 import { PRESETS, loadTheme, saveTheme, applyTheme, type SiteTheme } from "@/lib/site-theme";
 
 const FIELDS: { key: keyof Omit<SiteTheme, "name">; label: string }[] = [
@@ -90,6 +91,21 @@ export function ThemeCustomizer() {
           <Button onClick={() => { saveTheme(theme); toast.success("Website colours saved"); }}>Save colours</Button>
           <Button variant="outline" onClick={() => { saveTheme(null); setTheme(PRESETS[0]); toast.success("Reset to original colours"); }}>Reset to original</Button>
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function DemoDataCard() {
+  if (!DEMO_MODE) return null;
+  return (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle>Test data</CardTitle>
+        <CardDescription>The site is running on sample listings, roommates and payments. Reset them to start fresh.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Button variant="outline" onClick={() => { resetDemoData(); toast.success("Test data reset"); setTimeout(() => window.location.reload(), 600); }}>Reset test data</Button>
       </CardContent>
     </Card>
   );
