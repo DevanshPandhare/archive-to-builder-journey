@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import api from "@/lib/api";
+import { addProfile } from "@/lib/app-settings";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Enter your full name").max(100),
@@ -49,6 +50,7 @@ export function WelcomeProfileModal({ isLoggedIn }: { isLoggedIn: boolean }) {
       try { done = JSON.parse(localStorage.getItem(DONE_KEY) || "[]"); } catch { /* ignore */ }
       localStorage.setItem(DONE_KEY, JSON.stringify([...done, key]));
       localStorage.setItem("setmystay_profile", JSON.stringify(r.data));
+      addProfile(r.data as any);
       localStorage.setItem("user_name", r.data.name);
       toast.success("Thanks! Your details are saved.");
       setOpen(false);

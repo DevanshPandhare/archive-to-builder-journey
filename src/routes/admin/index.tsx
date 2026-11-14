@@ -52,7 +52,8 @@ import { cn } from '@/lib/utils';
 import { getFromLocalStorage, saveToLocalStorage } from '@/lib/storage';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ThemeCustomizer, DemoDataCard } from '@/components/admin/theme-customizer';
-import { AppSettingsCard } from '@/components/admin/app-settings-card';
+import { UserProfilesTable } from '@/components/admin/user-profiles-table';
+import { loadSettings, saveSettings } from '@/lib/app-settings';
 
 // Default credentials for the very first run
 const DEFAULT_ADMIN_PASSWORD = 'Bluechip@123';
@@ -706,6 +707,8 @@ function AdminDashboard() {
     const [properties, setProperties] = useState<Listing[]>([]);
     const [roommates, setRoommates] = useState<RoommateProfile[]>([]);
     const [pricing, setPricing] = useState<PricingData | null>(null);
+    const [swipeLimit, setSwipeLimit] = useState<number>(25);
+    useEffect(() => { setSwipeLimit(loadSettings().swipeLimit); }, []);
     const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
     const [advertisements, setAdvertisements] = useState<Advertisement[]>([]);
     const [coupons, setCoupons] = useState<Coupon[]>([]);
@@ -1091,7 +1094,9 @@ function AdminDashboard() {
     };
 
     const handleSavePricing = () => {
+        if (!swipeLimit || swipeLimit < 1) { toast({ title: "Invalid swipe limit", description: "Enter 1 or more.", variant: "destructive" }); return; }
         saveToLocalStorage('pricing', pricing);
+        saveSettings({ swipeLimit });
         toast({ title: "Pricing Updated", description: "The new prices have been saved." });
     }
     const handleUpdatePassword = (newPass: string) => {
@@ -1297,6 +1302,7 @@ function AdminDashboard() {
                         <TabsTrigger value="staff">Staff</TabsTrigger>
                         {/* 👇 New Purchases Tab 👇 */}
                         <TabsTrigger value="purchases">Purchases</TabsTrigger>
+                        <TabsTrigger value="users">Users</TabsTrigger>
                         <TabsTrigger value="appearance">Appearance</TabsTrigger>
                     </TabsList>
                 </div>
@@ -1517,6 +1523,13 @@ function AdminDashboard() {
                                                     ))}
                                                 </div>
                                             </div>
+                                            <div>
+                                                <h4 className="font-semibold mb-4 text-lg">Roommate Swipes</h4>
+                                                <div className="flex items-center gap-4">
+                                                    <Label htmlFor="swipe-limit" className="w-28">Swipes per account</Label>
+                                                    <Input id="swipe-limit" type="number" min={1} value={swipeLimit} onChange={(e) => setSwipeLimit(parseInt(e.target.value))} className="max-w-xs" />
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                     <div className="mt-6 flex justify-end">
@@ -1681,8 +1694,11 @@ function AdminDashboard() {
                     </Card>
                 </TabsContent>
 
+                <TabsContent value="users">
+                    <UserProfilesTable />
+                </TabsContent>
+
                 <TabsContent value="appearance">
-                    <AppSettingsCard />
                     <ThemeCustomizer />
                     <DemoDataCard />
                 </TabsContent>

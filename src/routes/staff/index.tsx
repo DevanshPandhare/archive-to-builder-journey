@@ -28,6 +28,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { LoadingSpinner } from '@/components/icons';
 import { format } from 'date-fns';
+import { UserProfilesTable } from '@/components/admin/user-profiles-table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { Listing, RoommateProfile, AnyListing } from '@/lib/types';
 
@@ -266,6 +267,7 @@ function StaffDashboard() {
                             <TabsTrigger value="pending">Pending</TabsTrigger>
                             <TabsTrigger value="approved">Approved</TabsTrigger>
                             <TabsTrigger value="rejected">Rejected</TabsTrigger>
+                            <TabsTrigger value="users">Users</TabsTrigger>
                         </TabsList>
                     </div>
 
@@ -277,6 +279,9 @@ function StaffDashboard() {
                     </TabsContent>
                     <TabsContent value="rejected">
                         {renderListingsTable('rejected')}
+                    </TabsContent>
+                    <TabsContent value="users">
+                        <UserProfilesTable />
                     </TabsContent>
                 </Tabs>
             </main>
