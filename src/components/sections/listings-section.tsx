@@ -203,7 +203,6 @@ export function ListingsSection({
   const [filters, setFilters] = useState<FilterState>({ ...initialFilters, ...initialSearchFilters });
   const [pageTitle, setPageTitle] = useState('');
   const [pageDescription, setPageDescription] = useState('');
-  const [layout, setLayout] = useState<'grid' | 'list' | 'swipe'>('grid');
   
   useEffect(() => {
     if (initialSearchFilters) {
@@ -356,24 +355,12 @@ export function ListingsSection({
               </Sheet>
             </div>
             <p className="text-sm text-muted-foreground hidden md:block">{filteredListings.length} results found</p>
-            <ToggleGroup type="single" value={layout} onValueChange={(value: 'grid' | 'list' | 'swipe') => value && setLayout(value)} aria-label="Layout options">
-                <ToggleGroupItem value="grid" aria-label="Grid view">
-                    <LayoutGrid className="h-4 w-4" />
-                </ToggleGroupItem>
-                <ToggleGroupItem value="swipe" aria-label="Swipe view">
-                    <Layers className="h-4 w-4" />
-                </ToggleGroupItem>
-                <ToggleGroupItem value="list" aria-label="List view">
-                    <List className="h-4 w-4" />
-                </ToggleGroupItem>
-            </ToggleGroup>
-          </div>
-          {layout === 'swipe' && filteredListings.length > 0 && (
+                      </div>
+          {type === 'roommate' && filteredListings.length > 0 && (
             <SwipeDeck items={filteredListings} likedItemIds={likedItemIds} onToggleLike={onToggleLike} onViewDetails={(i, t) => onViewDetails(i, t)} className="py-6" />
           )}
           <div className={cn(
-            "grid gap-6", layout === 'swipe' && "hidden",
-            layout === 'grid' ? "sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"
+            "grid gap-6 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3", type === 'roommate' && "hidden"
           )}>
             {filteredListings.map(item => {
               const itemType = item.propertyType === 'Roommate' ? 'roommate' : 'listing';

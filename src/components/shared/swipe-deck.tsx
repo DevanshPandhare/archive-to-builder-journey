@@ -3,6 +3,7 @@ import { AnimatePresence, animate, motion, useMotionValue, useTransform } from "
 import { Heart, X, RotateCcw, MapPin, Info, Sparkles } from "lucide-react";
 import type { AnyListing, Listing, RoommateProfile } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { recordSwipe, swipesLeft } from "@/lib/app-settings";
 
 interface SwipeDeckProps {
   items: AnyListing[];
@@ -19,6 +20,8 @@ export function SwipeDeck({ items, likedItemIds, onToggleLike, onViewDetails, cl
   const [lastAction, setLastAction] = useState<"like" | "pass" | null>(null);
   const [trigger, setTrigger] = useState<{ dir: 1 | -1; n: number } | null>(null);
 
+  const [left, setLeft] = useState(25);
+  useEffect(() => { setLeft(swipesLeft()); }, []);
   useEffect(() => { setIndex(0); }, [items.length]);
 
   const handleSwiped = (item: AnyListing, dir: 1 | -1) => {
@@ -26,10 +29,13 @@ export function SwipeDeck({ items, likedItemIds, onToggleLike, onViewDetails, cl
     setLastAction(dir === 1 ? "like" : "pass");
     setIndex((i) => i + 1);
     setTrigger(null);
+    recordSwipe();
+    setLeft(swipesLeft());
   };
 
   const visible = items.slice(index, index + 3);
-  const done = index >= items.length;
+  const outOfSwipes = left <= 0;
+  const done = index >= items.length || outOfSwipes;
 
   return (
     <div className={cn("flex flex-col items-center", className)}>
@@ -46,7 +52,14 @@ export function SwipeDeck({ items, likedItemIds, onToggleLike, onViewDetails, cl
             />
           )).reverse()}
         </AnimatePresence>
-        {done && (
+        {outOfSwipes && (
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-[2rem] border border-border bg-card p-8 text-center">
+            <Sparkles className="h-10 w-10 text-primary" />
+            <p className="font-display text-2xl">You've used all your swipes</p>
+            <p className="text-sm text-muted-foreground">Your liked roommates are saved under Liked Properties.</p>
+          </div>
+        )}
+        {done && !outOfSwipes && (
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
             className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-[2rem] border border-dashed border-border bg-card text-center p-8">
             <Sparkles className="h-10 w-10 text-accent" />
@@ -68,7 +81,7 @@ export function SwipeDeck({ items, likedItemIds, onToggleLike, onViewDetails, cl
         <SwipeButton label="Like" disabled={done} onClick={() => setTrigger({ dir: 1, n: Date.now() })} variant="like"><Heart className="h-7 w-7 fill-current" /></SwipeButton>
       </div>
       <p className="mt-4 h-5 text-xs uppercase tracking-[0.25em] text-muted-foreground">
-        {lastAction === "like" ? "Saved to your likes ♥" : lastAction === "pass" ? "Skipped" : "Drag the card or tap a button"}
+        {outOfSwipes ? "No swipes left" : `${left} swipes left`}
       </p>
     </div>
   );
@@ -128,8 +141,8 @@ function SwipeCard({ item, depth, trigger, onSwiped, onInfo }: { item: AnyListin
         <div className="absolute inset-0 bg-ink-fade" />
         <motion.div style={{ opacity: likeOpacity }} className="absolute left-6 top-8 -rotate-12 rounded-xl border-4 border-success px-4 py-1 font-display text-3xl font-bold tracking-widest text-success">LIKE</motion.div>
         <motion.div style={{ opacity: nopeOpacity }} className="absolute right-6 top-8 rotate-12 rounded-xl border-4 border-destructive px-4 py-1 font-display text-3xl font-bold tracking-widest text-destructive">NOPE</motion.div>
-        <span className="absolute left-5 top-5 glass rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-ink-foreground">
-          {item.propertyType === "Rental" ? "Rental" : item.propertyType}
+        <span className="absolute left-5 top-5 glass rounded-full px-3 py-1 text-[11px] font-semibold text-ink-foreground">
+          {roommate && item.hasProperty ? "Looking for roommate" : "Looking for property"}
         </span>
         <div className="absolute inset-x-0 bottom-0 space-y-3 p-6 text-ink-foreground">
           <div className="flex items-end justify-between gap-3">

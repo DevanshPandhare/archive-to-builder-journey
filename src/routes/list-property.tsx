@@ -20,6 +20,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ListPropertySection } from '@/components/sections/list-property-section';
 import { ListPropertyPaymentModal } from '@/components/modals/list-property-payment-modal';
+import { feeFor } from '@/lib/app-settings';
 import { createListing } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
 
@@ -152,6 +153,7 @@ function ListPropertyPage() {
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         onProceedToPayment={handlePaymentSuccess}
+        amount={feeFor(formData?.property_type ?? formData?.propertyType)}
         pricing={null} 
       />
     </main>

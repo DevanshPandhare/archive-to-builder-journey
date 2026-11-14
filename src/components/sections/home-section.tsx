@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useLiteMode } from "@/lib/perf";
 import { ArrowRight, ArrowUpRight, BedDouble, Building2, Users, ShieldCheck, Search, KeyRound, ChevronDown } from "lucide-react";
@@ -38,15 +38,23 @@ export function HomeSection({ featuredProperties, featuredRoommates, onViewDetai
   const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.25]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, 200]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
-  const [deck, setDeck] = useState<"homes" | "roommates">("homes");
   const lite = useLiteMode();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = videoRef.current; if (!v) return;
+    v.muted = true; v.setAttribute("muted", ""); v.setAttribute("webkit-playsinline", "");
+    const play = () => v.play().catch(() => {});
+    play();
+    document.addEventListener("touchstart", play, { once: true, passive: true });
+    return () => document.removeEventListener("touchstart", play);
+  }, []);
 
   return (
     <div>
       {/* HERO */}
       <section ref={heroRef} className="relative h-[90svh] min-h-[620px] overflow-hidden bg-ink">
-        <motion.video style={lite ? undefined : { scale: videoScale }} autoPlay loop muted playsInline preload="auto"
-          className="absolute inset-0 h-full w-full object-cover" src={heroVideo.url} />
+        <motion.video ref={videoRef} controls={false} disablePictureInPicture disableRemotePlayback style={lite ? undefined : { scale: videoScale }} autoPlay loop muted playsInline preload="auto"
+          className="hero-video pointer-events-none absolute inset-0 h-full w-full object-cover" src={heroVideo.url} />
         <div className="absolute inset-0 bg-ink-fade" />
         <motion.div style={lite ? undefined : { y: contentY, opacity: contentOpacity }}
           className="container relative z-10 flex h-full flex-col justify-end pb-20 sm:pb-24 text-ink-foreground">
@@ -97,22 +105,12 @@ export function HomeSection({ featuredProperties, featuredRoommates, onViewDetai
       <section className="relative overflow-hidden bg-ink py-16 sm:py-24 text-ink-foreground">
         <div className="container grid items-center gap-16 lg:grid-cols-2">
           <Reveal>
-            <p className="text-sm text-accent">Your next shortlist</p>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-tight">A place worth saving.</h2>
-            <p className="mt-6 max-w-md text-ink-foreground/70">A sunny room, a shorter commute, or someone who shares your routine. See what feels right.</p>
-            <div className="mt-10 inline-flex rounded-full glass p-1.5">
-              {(["homes", "roommates"] as const).map((k) => (
-                <Button variant="ghost" key={k} onClick={() => setDeck(k)}
-                  className={cn("relative rounded-full px-6 py-2.5 text-sm font-semibold capitalize transition-colors", deck === k ? "text-accent-foreground" : "text-ink-foreground/70")}>
-                  {deck === k && <motion.span layoutId="deck-pill" className="absolute inset-0 rounded-full bg-brass" transition={{ type: "spring", stiffness: 400, damping: 32 }} />}
-                  <span className="relative">{k}</span>
-                </Button>
-              ))}
-            </div>
-          </Reveal>
+            <p className="text-sm text-accent">Roommate match</p>
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl font-semibold leading-tight">Find someone to share with.</h2>
+            <p className="mt-6 max-w-md text-ink-foreground/70">Swipe right on roommates you'd like to live with, left to skip.</p>          </Reveal>
           <Reveal delay={0.15} className="text-foreground">
-            {(deck === "homes" ? featuredProperties : featuredRoommates).length > 0 ? (
-              <SwipeDeck key={deck} items={deck === "homes" ? featuredProperties : featuredRoommates}
+            {featuredRoommates.length > 0 ? (
+              <SwipeDeck items={featuredRoommates}
                 likedItemIds={likedItemIds} onToggleLike={onToggleLike} onViewDetails={onViewDetails} className="[&_p.mt-4]:text-ink-foreground/60" />
             ) : (
               <div className="mx-auto grid h-[520px] max-w-[380px] place-items-center rounded-[2rem] glass text-ink-foreground/70 text-center p-8">New listings are on their way.</div>

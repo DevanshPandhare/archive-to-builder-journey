@@ -2,11 +2,11 @@
 <rect width="48" height="48" rx="12" fill="url(#paint0_linear_1_2)"/>
 <path d="M14 34V18.2L24 14L34 18.2V34H14Z" fill="white" fill-opacity="0.2"/>
 <path d="M24 20L17 23.5V32H31V23.5L24 20Z" fill="white"/>
-<path d="M20 28H28V30H20V28Z" fill="#4582EF"/>
+<path d="M20 28H28V30H20V28Z" fill="#3B82F6"/>
 <defs>
 <linearGradient id="paint0_linear_1_2" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-<stop stop-color="#4582EF"/>
-<stop offset="1" stop-color="#2BBACA"/>
+<stop stop-color="#3B82F6"/>
+<stop offset="1" stop-color="#1D4ED8"/>
 </linearGradient>
 </defs>
 </svg>

@@ -198,7 +198,7 @@ export function Header({
                         <span className="sr-only">Open menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-full max-w-sm p-0 flex flex-col">
+                <SheetContent side="right" className="w-full max-w-sm p-0 flex flex-col [&>button.absolute]:hidden">
                   <div className="flex items-center justify-between p-6 pb-4">
                      <SheetClose asChild>
                        <Link to="/" className="flex items-center gap-2" onClick={() => setActivePage('home')}>

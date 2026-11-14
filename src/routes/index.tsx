@@ -29,6 +29,8 @@ import { PropertyDetails } from "@/components/modals/property-details";
 import { RoommateDetails } from "@/components/modals/roommate-details";
 import { UnlockDetailsModal } from "@/components/modals/unlock-details-modal";
 import { ListPropertyPaymentModal } from "@/components/modals/list-property-payment-modal";
+import { feeFor } from "@/lib/app-settings";
+import { WelcomeProfileModal } from "@/components/modals/welcome-profile-modal";
 import { AuthModal } from "@/components/modals/auth-modal";
 import { ChatModal } from "@/components/modals/chat-modal";
 import { LoadingSpinner } from "@/components/icons";
@@ -228,6 +230,11 @@ function Home() {
   const handleNavigate = (page: Page) => {
     setActivePage(page);
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+    (window as unknown as { __lenis?: { scrollTo: (t: number, o: object) => void } }).__lenis?.scrollTo(0, { immediate: true });
+  }, [activePage]);
 
   const handleRateUsClose = (rated: boolean) => {
     setRateUsModalOpen(false);
@@ -654,9 +661,11 @@ function Home() {
         isOpen={isListPaymentModalOpen}
         onClose={() => setListPaymentModalOpen(false)}
         propertyId={pendingListingData?.id || ''}
+        amount={feeFor(pendingListingData && 'propertyType' in pendingListingData ? pendingListingData.propertyType : 'ROOMMATE')}
         onProceedToPayment={handleListProperty}
         pricing={pricing}
       />
+      <WelcomeProfileModal isLoggedIn={isLoggedIn} />
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => {

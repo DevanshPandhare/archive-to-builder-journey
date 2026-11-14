@@ -52,6 +52,7 @@ import { cn } from '@/lib/utils';
 import { getFromLocalStorage, saveToLocalStorage } from '@/lib/storage';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ThemeCustomizer, DemoDataCard } from '@/components/admin/theme-customizer';
+import { AppSettingsCard } from '@/components/admin/app-settings-card';
 
 // Default credentials for the very first run
 const DEFAULT_ADMIN_PASSWORD = 'Bluechip@123';
@@ -1681,6 +1682,7 @@ function AdminDashboard() {
                 </TabsContent>
 
                 <TabsContent value="appearance">
+                    <AppSettingsCard />
                     <ThemeCustomizer />
                     <DemoDataCard />
                 </TabsContent>
